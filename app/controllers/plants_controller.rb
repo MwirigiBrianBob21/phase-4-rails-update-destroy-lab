@@ -20,21 +20,42 @@ class PlantsController < ApplicationController
     render json: plant, status: :created
   end
 
-  def update
-    plant = find_plant
-    # plant.update(plant_params)
-     plant.update(is_in_stock: bird.is_in_stock = true)
+  # def update
+  #   plant = find_plant
+  #   # plant.update(plant_params)
+  #   plant.update(find_plant)
+  #   render json: plant  
+  # end
 
-    render json: plant
-  # rescue ActiveRecord::RecordNotFound
-  #   render_not_found_response
+  def update
+    plant = Plant.find_by(id: params[:id])
+    if plant 
+      # update
+      plant.update(plant_params)
+      render json: plant
+    else
+      render json:{error: "Plant not found"}, status: :not_found
+    end
   end
+
+  # DELETE /plants/:id
+  def destroy
+    # find
+    plant = Plant.find_by(id: params[:id])
+    if plant
+      plant.destroy
+      head :no_content
+    else
+      render json:{error: "Plant not found"}, status: :not_found
+    end
+  end
+
 
 
   # PATCH /birds/:id/like
   # def add_in_stock
   #   plant = find_plant
-  #   plant.update(is_in_stock: bird.is_in_stock = true)
+  #   plant.update(find_plant)
   #   render json: plant
   # end
 
@@ -54,7 +75,5 @@ class PlantsController < ApplicationController
     Plant.find(params[:id])
   end
 
-  # def render_not_found_response
-  #   render json: { error: "Plant not found" }, status: :not_found
-  # end
+ 
 end
